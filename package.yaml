@@ -5,6 +5,7 @@ maintainer: HaskellNixCabalStarter
 license: MIT
 dependencies:
 - base
+- scotty
 executables:
   app:
     source-dirs: src
