@@ -1,0 +1,41 @@
+name: "Test and Build"
+on:
+  push:
+  pull_request:
+
+jobs:
+  haskell-nix-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v27
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - name: Build and test Haskell app
+      run: |
+        set -x 
+
+        nix-build
+
+        ./result/bin/app > output.txt 2>&1 &
+        sleep 5
+
+        echo "Checking /normal endpoint:"
+        curl -v localhost:3000/normal || true
+
+        echo "nChecking /test endpoint:"
+        curl -v localhost:3000/test || true
+
+        sleep 5
+
+        echo "output.txt:"
+        cat output.txt
+
+        sleep 5
+
+        wc -l output.txt
+
+
+
+
+
